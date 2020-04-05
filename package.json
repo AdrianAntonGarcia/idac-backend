@@ -1,0 +1,18 @@
+{
+	"name": "idac-backend",
+	"version": "1.0.0",
+	"description": "Servicios para la pagina web de idac",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon app.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Adrian Anton",
+	"license": "ISC",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"mongoose": "^5.9.7",
+		"mongoose-unique-validator": "^2.0.3"
+	}
+}
