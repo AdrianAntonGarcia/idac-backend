@@ -41,6 +41,10 @@ var usuarioSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	img: {
+		type: String,
+		default: '',
+	},
 	setup_pure: {
 		type: Boolean,
 		default: false,
@@ -52,6 +56,11 @@ var usuarioSchema = new Schema({
 	setup_craig: {
 		type: Boolean,
 		default: false,
+	},
+	activo: {
+		type: Boolean,
+		required: true,
+		default: true,
 	},
 });
 

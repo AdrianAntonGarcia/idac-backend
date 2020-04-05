@@ -194,7 +194,6 @@ app.delete("/", (req, res) => {
 	}
 });
 
-
 /**
  * SERVICIO ALTA LÓGICA CÓDIGO
  *
@@ -260,4 +259,34 @@ app.post("/activarCodigo", (req, res) => {
 	}
 });
 
-module.exports = app;
+/**
+ * Función que busca un código en la base de datos
+ * @param {*} id el id del codigo a buscar
+ */
+async function buscarCodigo(id) {
+	return new Promise((resolve, reject) => {
+		try {
+			const codigo = Codigo.findById(id);
+			resolve(codigo);
+		} catch (error) {
+			reject(error);
+		}
+	});
+}
+
+/**
+ * Función que guarda un código en la base de datos
+ * @param {*} codigoIntroducido el codigo a guardar de tipo Codigo
+ */
+async function guardarCodigo(codigoGuardar) {
+	return new Promise((resolve, reject) => {
+		try {
+			const codigoGuardado = codigoGuardar.save();
+			resolve(codigoGuardado);
+		} catch (error) {
+			reject(error);
+		}
+	});
+}
+
+module.exports = { app, buscarCodigo, guardarCodigo };

@@ -34,7 +34,9 @@ app.use(bodyParser.json());
 
 /**Importar rutas */
 var appRoutes = require("./routes/app");
-var codigoRoutes = require("./routes/codigo");
+var codigoRoutes = require("./routes/codigo").app;
+var usuarioRoutes = require("./routes/usuario");
+
 
 // Conexión a la base de datos
 mongoose.connection.openUri("mongodb://localhost:27017/idacDB", (err, res) => {
@@ -45,6 +47,8 @@ mongoose.connection.openUri("mongodb://localhost:27017/idacDB", (err, res) => {
 // Conectamos los servicios
 app.use("/", appRoutes);
 app.use("/codigo", codigoRoutes);
+app.use("/usuario", usuarioRoutes);
+
 
 // Escuchar Peticiones
 app.listen(3000, () => {
