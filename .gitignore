@@ -2,3 +2,4 @@ node_modules/
 google-signin-demo/node_modules/
 sendgrid.env
 env.variables.json
+.env

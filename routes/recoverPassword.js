@@ -18,12 +18,9 @@ var mdAutenticacion = require("../middlewares/autenticacion");
 
 //Variables de entorno
 
-var envJSON = require("../env.variables.json");
 
-var node_env = process.env.NODE_ENV || "development";
-var TodasMisVariablesDeEntorno = envJSON[node_env];
 
-sgMail.setApiKey(TodasMisVariablesDeEntorno.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY); 
 
 /**
  * Función que envía un correo electrónico para que reestablezca la contraseña
@@ -90,16 +87,16 @@ app.post("/recover", (req, res) => {
 			/**
 			 * Una vez tenemos el token creamos el email y lo envíamos
 			 */
-
+			console.log('proccess.env.IDACGMAIL',proccess.env.IDACGMAIL);
 			var transporter = nodemailer.createTransport({
 				service: "gmail",
 				auth: {
-					user: TodasMisVariablesDeEntorno.IDACGMAIL,
-					pass: TodasMisVariablesDeEntorno.PASSGMAIL,
+					user: process.env.IDACGMAIL,
+					pass: process.env.PASSGMAIL,
 				},
 			});
 			var mailOptions = {
-				from: TodasMisVariablesDeEntorno.IDACGMAIL,
+				from: process.env.IDACGMAIL,
 				to: usuarioDB.email,
 				subject: "Cambio de contraseña IDAC",
 				text:
@@ -213,16 +210,21 @@ app.post("/resendEmail", (req, res) => {
 			/**
 			 * Creamos el email y lo enviamos
 			 */
+			console.log('proccess.env.IDACGMAIL',process.env.IDACGMAIL);
+			console.log('proccess.env.PASSGMAIL',process.env.PASSGMAIL);
+			console.log(process.env);
+			console.log('proccess.env.SENDGRID_API_KEY',process.env.SENDGRID_API_KEY);
+
 			var transporter = nodemailer.createTransport({
 				service: "gmail",
 				auth: {
-					user: TodasMisVariablesDeEntorno.IDACGMAIL,
-					pass: TodasMisVariablesDeEntorno.PASSGMAIL,
+					user: process.env.IDACGMAIL,
+					pass: process.env.PASSGMAIL,
 				},
 			});
 
 			var mailOptions = {
-				from: TodasMisVariablesDeEntorno.IDACGMAIL,
+				from: process.env.IDACGMAIL,
 				to: usuarioDB.email,
 				subject: "Verificación de correo IDAC",
 				text:

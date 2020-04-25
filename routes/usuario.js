@@ -19,14 +19,8 @@ var guardarCodigo = require("./codigo").guardarCodigo;
 //Middlewares
 var mdAutenticacion = require("../middlewares/autenticacion");
 
-//Variables de entorno
-
-var envJSON = require("../env.variables.json");
-
-var node_env = process.env.NODE_ENV || "development";
-var TodasMisVariablesDeEntorno = envJSON[node_env];
-
-sgMail.setApiKey(TodasMisVariablesDeEntorno.SENDGRID_API_KEY);
+require('dotenv').config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * SERVICIO CREAR USUARIO
@@ -161,13 +155,13 @@ function crearUsuario(nombre, email, password, codigo, google, res, req) {
 						var transporter = nodemailer.createTransport({
 							service: "gmail",
 							auth: {
-								user: TodasMisVariablesDeEntorno.IDACGMAIL,
-								pass: TodasMisVariablesDeEntorno.PASSGMAIL,
+								user: process.env.IDACGMAIL,
+								pass: process.env.PASSGMAIL,
 							},
 						});
 
 						var mailOptions = {
-							from: TodasMisVariablesDeEntorno.IDACGMAIL,
+							from: process.env.IDACGMAIL,
 							to: usuarioGuardado.email,
 							subject: "Verificación de correo IDAC",
 							text:
