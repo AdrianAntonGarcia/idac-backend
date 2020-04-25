@@ -60,8 +60,16 @@ var usuarioSchema = new Schema({
 	activo: {
 		type: Boolean,
 		required: true,
-		default: true,
+		default: false,
 	},
+	passwordResetToken:{
+		type: String,
+		default: ''
+	},
+	passwordResetExpires:{
+		type: Date,
+		default: new Date('12/12/2099')
+	}
 });
 
 usuarioSchema.plugin(uniqueValidator, { message: "{PATH} debe de ser único" });

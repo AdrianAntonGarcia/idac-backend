@@ -11,20 +11,27 @@ var Codigo = require("../models/codigo");
  */
 
 app.get("/", (req, res, next) => {
-	Codigo.find({}, (err, codigos) => {
-		if (err) {
-			return res.status(500).json({
-				ok: false,
-				message:
-					"Error cargando codigos de iracing de la base de datos",
-				errors: err,
+	try {
+		Codigo.find({}, (err, codigos) => {
+			if (err) {
+				return res.status(500).json({
+					ok: false,
+					message:
+						"Error cargando codigos de iracing de la base de datos",
+					errors: err,
+				});
+			}
+			res.status(200).json({
+				ok: true,
+				codigos,
 			});
-		}
-		res.status(200).json({
-			ok: true,
-			codigos,
 		});
-	});
+	} catch (error) {
+		return res.status(500).json({
+			ok: false,
+			error,
+		});
+	}
 });
 
 /**
@@ -37,42 +44,49 @@ app.get("/", (req, res, next) => {
  */
 
 app.post("/", (req, res) => {
-	var body = req.body;
-	codigoIntroducido = parseInt(body.codigo);
-	activo = true;
-	if (body.activo) {
-		activo = body.activo;
-	}
-	/**
-	 * Si el tamaño del codigo de iracing no es de 6 devolvemos
-	 * un error indicandolo.
-	 */
-	if (!codigoIntroducido) {
-		return res.status(400).json({
-			ok: false,
-			message: "Código introducido erroneo",
-		});
-	} else {
-		if (codigoIntroducido.toString().length !== 6) {
+	try {
+		var body = req.body;
+		codigoIntroducido = parseInt(body.codigo);
+		activo = true;
+		if (body.activo) {
+			activo = body.activo;
+		}
+		/**
+		 * Si el tamaño del codigo de iracing no es de 6 devolvemos
+		 * un error indicandolo.
+		 */
+		if (!codigoIntroducido) {
 			return res.status(400).json({
 				ok: false,
-				message: "El tamaño del código de iracing debe de ser de 6",
+				message: "Código introducido erroneo",
 			});
-		}
-		// Tenemos el código validado
-		var codigo = new Codigo({ codigo: codigoIntroducido, activo });
-		codigo.save((err, codigoDB) => {
-			if (err) {
+		} else {
+			if (codigoIntroducido.toString().length !== 6) {
 				return res.status(400).json({
 					ok: false,
-					mensaje: "Error al crear código",
-					errors: err,
+					message: "El tamaño del código de iracing debe de ser de 6",
 				});
 			}
-			res.status(200).json({
-				ok: true,
-				codigo: codigoDB,
+			// Tenemos el código validado
+			var codigo = new Codigo({ codigo: codigoIntroducido, activo });
+			codigo.save((err, codigoDB) => {
+				if (err) {
+					return res.status(400).json({
+						ok: false,
+						mensaje: "Error al crear código",
+						errors: err,
+					});
+				}
+				res.status(200).json({
+					ok: true,
+					codigo: codigoDB,
+				});
 			});
+		}
+	} catch (error) {
+		return res.status(500).json({
+			ok: false,
+			error,
 		});
 	}
 });
@@ -86,45 +100,53 @@ app.post("/", (req, res) => {
  */
 
 app.get("/buscarCodigo", (req, res) => {
-	var body = req.body;
-	codigoIntroducido = parseInt(body.codigo);
-	/**
-	 * Si el tamaño del codigo de iracing no es de 6 devolvemos
-	 * un error indicandolo.
-	 */
-	if (!codigoIntroducido) {
-		return res.status(400).json({
-			ok: false,
-			message: "Código introducido erroneo",
-		});
-	} else {
-		if (codigoIntroducido.toString().length !== 6) {
+	try {
+		var body = req.body;
+		codigoIntroducido = parseInt(body.codigo);
+		/**
+		 * Si el tamaño del codigo de iracing no es de 6 devolvemos
+		 * un error indicandolo.
+		 */
+		if (!codigoIntroducido) {
 			return res.status(400).json({
 				ok: false,
-				message: "El tamaño del código de iracing debe de ser de 6",
+				message: "Código introducido erroneo",
 			});
-		}
-		// Tenemos el código validado
-		Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
-			if (err) {
-				return res.status(500).json({
-					ok: false,
-					mensaje: "Error al buscar el código",
-					errors: err,
-				});
-			}
-			//Si no viene un codigo
-			if (!codigoDB) {
+		} else {
+			if (codigoIntroducido.toString().length !== 6) {
 				return res.status(400).json({
 					ok: false,
-					mensaje: "El código " + codigoIntroducido + " no existe",
-					errors: { message: "No existe un código con ese id" },
+					message: "El tamaño del código de iracing debe de ser de 6",
 				});
 			}
-			res.status(200).json({
-				ok: true,
-				codigo: codigoDB,
+			// Tenemos el código validado
+			Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
+				if (err) {
+					return res.status(500).json({
+						ok: false,
+						mensaje: "Error al buscar el código",
+						errors: err,
+					});
+				}
+				//Si no viene un codigo
+				if (!codigoDB) {
+					return res.status(400).json({
+						ok: false,
+						mensaje:
+							"El código " + codigoIntroducido + " no existe",
+						errors: { message: "No existe un código con ese id" },
+					});
+				}
+				res.status(200).json({
+					ok: true,
+					codigo: codigoDB,
+				});
 			});
+		}
+	} catch (error) {
+		return res.status(500).json({
+			ok: false,
+			error,
 		});
 	}
 });
@@ -138,58 +160,66 @@ app.get("/buscarCodigo", (req, res) => {
  */
 
 app.delete("/", (req, res) => {
-	var body = req.body;
-	codigoIntroducido = parseInt(body.codigo);
+	try {
+		var body = req.body;
+		codigoIntroducido = parseInt(body.codigo);
 
-	/**
-	 * Si el tamaño del codigo de iracing no es de 6 devolvemos
-	 * un error indicandolo.
-	 */
-	if (!codigoIntroducido) {
-		return res.status(400).json({
-			ok: false,
-			message: "Código introducido erroneo",
-		});
-	} else {
-		if (codigoIntroducido.toString().length !== 6) {
+		/**
+		 * Si el tamaño del codigo de iracing no es de 6 devolvemos
+		 * un error indicandolo.
+		 */
+		if (!codigoIntroducido) {
 			return res.status(400).json({
 				ok: false,
-				message: "El tamaño del código de iracing debe de ser de 6",
+				message: "Código introducido erroneo",
 			});
-		}
-		// Tenemos el código validado
-		// Buscamos ese código
-		Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
-			if (err) {
-				return res.status(500).json({
-					ok: false,
-					mensaje: "Error al buscar el código",
-					errors: err,
-				});
-			}
-			//Si no viene un codigo
-			if (!codigoDB) {
+		} else {
+			if (codigoIntroducido.toString().length !== 6) {
 				return res.status(400).json({
 					ok: false,
-					mensaje: "El código " + codigoIntroducido + " no existe",
-					errors: { message: "No existe un código con ese id" },
+					message: "El tamaño del código de iracing debe de ser de 6",
 				});
 			}
-			codigoDB.activo = false;
-			//Guardamos el nuevo código inactivo
-			codigoDB.save((err, codigoGuardado) => {
+			// Tenemos el código validado
+			// Buscamos ese código
+			Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
 				if (err) {
 					return res.status(500).json({
 						ok: false,
-						mensaje: "Error al guardar el código",
+						mensaje: "Error al buscar el código",
 						errors: err,
 					});
 				}
-				res.status(200).json({
-					ok: true,
-					codigo: codigoGuardado,
+				//Si no viene un codigo
+				if (!codigoDB) {
+					return res.status(400).json({
+						ok: false,
+						mensaje:
+							"El código " + codigoIntroducido + " no existe",
+						errors: { message: "No existe un código con ese id" },
+					});
+				}
+				codigoDB.activo = false;
+				//Guardamos el nuevo código inactivo
+				codigoDB.save((err, codigoGuardado) => {
+					if (err) {
+						return res.status(500).json({
+							ok: false,
+							mensaje: "Error al guardar el código",
+							errors: err,
+						});
+					}
+					res.status(200).json({
+						ok: true,
+						codigo: codigoGuardado,
+					});
 				});
 			});
+		}
+	} catch (error) {
+		return res.status(500).json({
+			ok: false,
+			error,
 		});
 	}
 });
@@ -203,58 +233,66 @@ app.delete("/", (req, res) => {
  */
 
 app.post("/activarCodigo", (req, res) => {
-	var body = req.body;
-	codigoIntroducido = parseInt(body.codigo);
+	try {
+		var body = req.body;
+		codigoIntroducido = parseInt(body.codigo);
 
-	/**
-	 * Si el tamaño del codigo de iracing no es de 6 devolvemos
-	 * un error indicandolo.
-	 */
-	if (!codigoIntroducido) {
-		return res.status(400).json({
-			ok: false,
-			message: "Código introducido erroneo",
-		});
-	} else {
-		if (codigoIntroducido.toString().length !== 6) {
+		/**
+		 * Si el tamaño del codigo de iracing no es de 6 devolvemos
+		 * un error indicandolo.
+		 */
+		if (!codigoIntroducido) {
 			return res.status(400).json({
 				ok: false,
-				message: "El tamaño del código de iracing debe de ser de 6",
+				message: "Código introducido erroneo",
 			});
-		}
-		// Tenemos el código validado
-		// Buscamos ese código
-		Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
-			if (err) {
-				return res.status(500).json({
-					ok: false,
-					mensaje: "Error al buscar el código",
-					errors: err,
-				});
-			}
-			//Si no viene un codigo
-			if (!codigoDB) {
+		} else {
+			if (codigoIntroducido.toString().length !== 6) {
 				return res.status(400).json({
 					ok: false,
-					mensaje: "El código " + codigoIntroducido + " no existe",
-					errors: { message: "No existe un código con ese id" },
+					message: "El tamaño del código de iracing debe de ser de 6",
 				});
 			}
-			codigoDB.activo = true;
-			//Guardamos el nuevo código inactivo
-			codigoDB.save((err, codigoGuardado) => {
+			// Tenemos el código validado
+			// Buscamos ese código
+			Codigo.findOne({ codigo: codigoIntroducido }, (err, codigoDB) => {
 				if (err) {
 					return res.status(500).json({
 						ok: false,
-						mensaje: "Error al guardar el código",
+						mensaje: "Error al buscar el código",
 						errors: err,
 					});
 				}
-				res.status(200).json({
-					ok: true,
-					codigo: codigoGuardado,
+				//Si no viene un codigo
+				if (!codigoDB) {
+					return res.status(400).json({
+						ok: false,
+						mensaje:
+							"El código " + codigoIntroducido + " no existe",
+						errors: { message: "No existe un código con ese id" },
+					});
+				}
+				codigoDB.activo = true;
+				//Guardamos el nuevo código inactivo
+				codigoDB.save((err, codigoGuardado) => {
+					if (err) {
+						return res.status(500).json({
+							ok: false,
+							mensaje: "Error al guardar el código",
+							errors: err,
+						});
+					}
+					res.status(200).json({
+						ok: true,
+						codigo: codigoGuardado,
+					});
 				});
 			});
+		}
+	} catch (error) {
+		return res.status(500).json({
+			ok: false,
+			error,
 		});
 	}
 });

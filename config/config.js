@@ -1,0 +1,1 @@
+module.exports.SEED = 'n12323adAASADsd%%%dsjDASk2aGHd123na@@BGFB2';
