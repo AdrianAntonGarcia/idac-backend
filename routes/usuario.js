@@ -5,7 +5,7 @@ var app = express();
 var nodemailer = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
 var jwt = require("jsonwebtoken");
-var SEED = require("../config/config").SEED;
+var SEED = process.env.SEED;
 
 // Modelos
 var Usuario = require("../models/usuario");

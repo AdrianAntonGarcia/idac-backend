@@ -6,7 +6,7 @@ var nodemailer = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
 var jwt = require("jsonwebtoken");
 
-var SEED = require("../config/config").SEED;
+var SEED = process.env.SEED;
 
 // Modelos
 var Usuario = require("../models/usuario");
@@ -87,7 +87,6 @@ app.post("/recover", (req, res) => {
 			/**
 			 * Una vez tenemos el token creamos el email y lo envíamos
 			 */
-			console.log('proccess.env.IDACGMAIL',proccess.env.IDACGMAIL);
 			var transporter = nodemailer.createTransport({
 				service: "gmail",
 				auth: {
@@ -102,7 +101,7 @@ app.post("/recover", (req, res) => {
 				text:
 					"Hola,\n\n" +
 					"Recupera tu contraseña haciendo click en en: \nhttp://" +
-					"localhost:4200" +
+					process.env.WEBURL +
 					"/changePass/" +
 					encodeURIComponent(tokenEmailGuardado.token) +
 					".\n",
@@ -210,10 +209,6 @@ app.post("/resendEmail", (req, res) => {
 			/**
 			 * Creamos el email y lo enviamos
 			 */
-			console.log('proccess.env.IDACGMAIL',process.env.IDACGMAIL);
-			console.log('proccess.env.PASSGMAIL',process.env.PASSGMAIL);
-			console.log(process.env);
-			console.log('proccess.env.SENDGRID_API_KEY',process.env.SENDGRID_API_KEY);
 
 			var transporter = nodemailer.createTransport({
 				service: "gmail",

@@ -5,7 +5,7 @@ var jwt = require("jsonwebtoken");
 var app = express();
 var Usuario = require("../models/usuario");
 
-var SEED = require("../config/config").SEED;
+var SEED = process.env.SEED;
 
 /**
  * SERVICIO LOGIN NORMAL

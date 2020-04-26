@@ -2,7 +2,7 @@ var express = require("express");
 
 var app = express();
 var jwt = require("jsonwebtoken");
-var SEED = require("../config/config").SEED;
+var SEED = process.env.SEED;
 // Modelos
 var Usuario = require("../models/usuario");
 var TokenEmail = require("../models/tokenEmail");
@@ -83,7 +83,7 @@ app.get("/confirmacion/:token", (req, res) => {
 					// 	message: `Usuario ${usuarioDB.email} activado`
 					// });
 					res.status(200).send(
-						"La cuenta ha sido activada, por favor logueate: <a href='http://localhost:4200/login'>Login</a>"
+						"La cuenta ha sido activada, por favor logueate: <a href='"+process.env.WEBURL+"'>Login</a>"
 					);
 				});
 			});
